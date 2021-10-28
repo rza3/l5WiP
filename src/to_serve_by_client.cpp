@@ -2,17 +2,20 @@
 #include "std_msgs/String.h"
 #include "std_srvs/Trigger.h"
 
+
 /**
  * This tutorial demonstrates simple receipt of messages over the ROS system.
  */
 
 std_srvs::Trigger begin_comp;
 int service_call_succeeded;
-
+bool has_had_successful_call = false;
+/**
 void chatterCallback(const std_msgs::String::ConstPtr& msg)
 {
   ROS_INFO("I heard: [%s]", msg->data.c_str());
 }
+*/
 
 int main(int argc, char **argv)
 {
@@ -26,7 +29,7 @@ int main(int argc, char **argv)
    * You must call one of the versions of ros::init() before using any other
    * part of the ROS system.
    */
-  ros::init(argc, argv, "listener");
+  ros::init(argc, argv, "listener_begin");
 
   /**
    * NodeHandle is the main access point to communications with the ROS system.
@@ -50,7 +53,7 @@ int main(int argc, char **argv)
    * is the number of messages that will be buffered up before beginning to throw
    * away the oldest ones.
    */
-  ros::Subscriber sub = n.subscribe("chatter", 1000, chatterCallback);
+//  ros::Subscriber sub = n.subscribe("chatter", 1000, chatterCallback);
 
   /**
    * ros::spin() will enter a loop, pumping callbacks.  With this version, all
@@ -65,11 +68,17 @@ if(!service_call_succeeded){
 ROS_ERROR("Competition service call failed! Goodness Gracious !!");
 }
 else{
-ROS_INFO("Competition service called successfully: %s", \
-	  begin_comp.response.message.c_str());
-begin_comp.response.success = false;
+ROS_INFO("Competition service call succeeded");
 if(!begin_comp.response.success){
 ROS_WARN("Competition service returned failure: %s", begin_comp.response.message.c_str());
+if(has_had_successful_call){
+ROS_WARN("Simulation is in progress. Please manually close and restart to reset!");
+}
+}
+else{
+ROS_INFO("Competition service called successfully: %s", \
+	  begin_comp.response.message.c_str());
+has_had_successful_call = true;
 }
 }
 
