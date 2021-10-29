@@ -71,7 +71,7 @@ else{
 ROS_INFO("Competition service call succeeded");
 if(!begin_comp.response.success){
 ROS_WARN("Competition service returned failure: %s", begin_comp.response.message.c_str());
-if(has_had_successful_call){
+if(!has_had_successful_call){
 ROS_WARN("Simulation is in progress. Please manually close and restart to reset!");
 }
 }
